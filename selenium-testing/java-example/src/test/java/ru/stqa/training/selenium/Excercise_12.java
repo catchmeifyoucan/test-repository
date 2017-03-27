@@ -40,8 +40,9 @@ public class Excercise_12 {
         goToCatalog();
         goToAddNewProduct();
         addNewProduct();
+        driver.get("http://localhost:8080/litecart/admin/?app=catalog&doc=catalog&category_id=1");
 
-
+        assert(driver.findElements(By.xpath("//a[text()= '"+productName+"']")).size()>0);
 
     }
 
@@ -65,7 +66,45 @@ public class Excercise_12 {
 
     private void addNewProduct()
     {
+
         addProductGeneralInfo();
+        addProductInformationInfo();
+        addPricesInfo();
+        driver.findElement(By.name("save")).click();
+
+    }
+
+    private void addPricesInfo()
+    {
+
+        driver.findElement(By.xpath("//a[text()='Prices']")).click();
+        setPurchasePrice();
+        setPrice();
+    }
+
+    private void setPrice()
+    {
+        WebElement inPriceUSD = driver.findElement(By.cssSelector("input[name='prices[USD]']"));
+        inPriceUSD.clear();
+        inPriceUSD.sendKeys("20");
+        driver.findElement(By.cssSelector("input[name='gross_prices[USD]']")).clear();
+        driver.findElement(By.cssSelector("input[name='gross_prices[USD]']")).sendKeys("3");
+
+        WebElement inPriceEUR = driver.findElement(By.cssSelector("input[name='prices[EUR]']"));
+        inPriceEUR.clear();
+        inPriceEUR.sendKeys("20");
+        driver.findElement(By.cssSelector("input[name='gross_prices[EUR]']")).clear();
+        driver.findElement(By.cssSelector("input[name='gross_prices[EUR]']")).sendKeys("3");
+    }
+
+    private void setPurchasePrice()
+    {
+        WebElement inPurchasePrice = driver.findElement(By.cssSelector("input[name='purchase_price']"));
+        inPurchasePrice.clear();
+        inPurchasePrice.sendKeys("1");
+
+        Select inCurrency = new Select(driver.findElement(By.cssSelector("select[name='purchase_price_currency_code']")));
+        inCurrency.selectByIndex(1);
     }
 
     private void addProductGeneralInfo()
@@ -83,6 +122,37 @@ public class Excercise_12 {
         setImage();
         setDateValidFrom();
         setDateValidTo();
+    }
+
+    private void addProductInformationInfo()
+    {
+        driver.findElement(By.xpath("//a[text()='Information']")).click();
+        setManufacturer();
+        setKeywords();
+        setShortDescription();
+        setDescription();
+    }
+
+    private void setKeywords()
+    {
+        driver.findElement(By.name("keywords")).sendKeys("sdsd, sdsd");
+    }
+
+    private void setShortDescription()
+    {
+        driver.findElement(By.name("short_description[en]")).sendKeys("sfsdf");
+    }
+
+    private void setDescription()
+    {
+        driver.findElement(By.name("description[en]")).sendKeys("sdsd");
+    }
+
+
+    private void setManufacturer()
+    {
+        Select inManufacturer = new Select(driver.findElement(By.cssSelector("select[name='manufacturer_id']")));
+        inManufacturer.selectByIndex(1);
     }
 
     private void setStatusEnabled()
@@ -124,7 +194,7 @@ public class Excercise_12 {
     private void setProductGroups()
     {
         WebElement productGroup = driver.findElement(By.cssSelector("input[type='checkbox'][name='product_groups[]'][value='1-2']"));
-        if(productGroup.isSelected())
+        if(!productGroup.isSelected())
             productGroup.click();
     }
 
